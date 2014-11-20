@@ -1,0 +1,87 @@
+/* Additional css
+Author:Charisse May M Dalida
+Version:1.0.0
+Created:October 2014
+File Description:Main CSS file of the site */
+
+
+.navbar-inverse {
+    position: relative;
+}
+.top-nav {
+    padding: 0 15px;
+}
+.top-nav>li {
+    display: inline-block;
+    float: left;
+}
+.top-nav>li>a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 20px;
+    color: #fff;
+}
+.top-nav>li>a:hover, .top-nav>li>a:focus, .top-nav>.open>a, .top-nav>.open>a:hover, .top-nav>.open>a:focus {
+    color: #fff;
+    background-color: rgba(91, 192, 222, 0.8);
+}
+ul.message-dropdown {
+    padding: 0;
+    max-height: 250px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.top-nav>.open>.dropdown-menu {
+    float: left;
+    position: absolute;
+    margin-top: 0;
+    border: 1px solid rgba(0,0,0,.15);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    background-color: #fff;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+li.message-preview {
+    width: 275px;
+    border-bottom: 1px solid rgba(0,0,0,.15);
+}
+.top-nav>.open>.dropdown-menu>li>a {
+    white-space: normal;
+}
+.select2-container {
+    width: 100%;
+}
+
+/* BUTTON */
+.btn-delete {
+    background-color: transparent;
+    color: red;
+    font-weight: bold;
+}
+
+/* BANNER */
+.backstretch {
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: -999998;
+    position: absolute;
+}
+
+.backstretch img {
+    position: absolute; 
+    margin: 0px; 
+    padding: 0px; 
+    border: none; 
+    width: 100%;
+    height: 100%; 
+    max-height: none; 
+    max-width: none; 
+    z-index: -999999; 
+    top: 0px;
+}
