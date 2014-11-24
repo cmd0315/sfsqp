@@ -8,6 +8,10 @@ Route::get('admin/signin', ['as' => 'admin.signin', 'uses' => 'SessionsControlle
 Route::resource('sessions', 'SessionsController');
 Route::get('members/export', ['as' => 'members.export', 'uses' => 'MembersController@export']);
 Route::resource('members', 'MembersController');
+Route::get('countries/export', ['as' => 'countries.export', 'uses' => 'CountriesController@export']);
+Route::resource('countries', 'CountriesController', ['except' => ['create', 'edit']]);
+Route::get('locations/export', ['as' => 'locations.export', 'uses' => 'LocationsController@export']);
+Route::resource('locations', 'LocationsController');
 
 /*
 *

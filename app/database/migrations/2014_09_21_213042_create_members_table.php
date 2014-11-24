@@ -20,7 +20,7 @@ class CreateMembersTable extends Migration {
 			$table->string('last_name', 60);
 			$table->date('birthdate');
 			$table->string('gender', 3);
-			$table->string('civil_status', 10);
+			$table->integer('civil_status');
 			$table->integer('country_id');
 			$table->string('street_address', 150);
 			$table->integer('location_id');

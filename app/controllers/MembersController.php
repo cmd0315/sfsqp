@@ -2,10 +2,19 @@
 
 class MembersController extends \BaseController {
 
+	/**
+	* Array for list of civil status
+	*
+	* @var array
+	*/
+    protected $civil_status_options = ['0' => 'Single', '1' => 'Married'];
 
-    protected $civil_status_options = ['Single', 'Married'];
-
-    protected $country_options = ['0' => 'Philippines', '1' => 'Others'];
+    /**
+	* Constructor
+	*/
+	function __construct() {
+		$this->beforeFilter('auth');
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -33,9 +42,9 @@ class MembersController extends \BaseController {
 	{
 		$locations = Location::select(DB::raw('concat (city,", ",area_name) as location,id'))->orderBy('area_name')->lists('location', 'id');
 		$civil_status_options = $this->civil_status_options;
-		$country_options = $this->country_options;
+		$countries = Country::orderBy('country_name')->lists('country_name', 'id');
 
-		return View::make('account.create.member', ['pageTitle' => 'Add Member'], compact('locations', 'civil_status_options', 'country_options'));
+		return View::make('account.create.member', ['pageTitle' => 'Add Member'], compact('locations', 'civil_status_options', 'countries'));
 	}
 
 
@@ -60,8 +69,8 @@ class MembersController extends \BaseController {
 				'civil_status' => 'required',
 				'country_id' => 'required',
 				'street_address' => 'required|max:50|min:5',
-				'location_id' => 'required',
-				'other_location' => 'required_if:country_id,1',
+				'location_id' => 'required_if:country_id,<,2',
+				'other_location' => 'required_if:country_id,>,1',
 				'email' => 'max:50|email|unique:members',
 				'mobile' => 'max:15|min:11',
 				'telephone' => 'max:15|min:7',
@@ -90,8 +99,7 @@ class MembersController extends \BaseController {
 				Flash::error('Failed to create member profile!');
 			}
 
-			return 	Redirect::route('members.create')
-				->with('global', 'Member successfully added!');
+			return 	Redirect::route('members.create');
 		}
 	}
 
@@ -120,9 +128,9 @@ class MembersController extends \BaseController {
 		$member = Member::where('id', $id)->firstOrFail();
 		$locations = Location::all();
 		$civil_status_options = $this->civil_status_options;
-		$country_options = $this->country_options;
+		$countries = Country::orderBy('country_name')->lists('country_name', 'id');
 
-		return View::make('account.edit.member', ['pageTitle' => 'Edit Member Profile'], compact('member', 'locations', 'civil_status_options', 'country_options'));
+		return View::make('account.edit.member', ['pageTitle' => 'Edit Member Profile'], compact('member', 'locations', 'civil_status_options', 'countries'));
 	}
 
 
@@ -144,7 +152,8 @@ class MembersController extends \BaseController {
 				'civil_status' => 'required',
 				'country_id' => 'required',
 				'street_address' => 'required|max:50|min:5',
-				'location_id' => 'required',
+				'location_id' => 'required_if:country_id,<,2',
+				'other_location' => 'required_if:country_id,>,1',
 				'email' => 'max:50|email',
 				'mobile' => 'max:15|min:11',
 				'telephone' => 'max:15|min:7',
@@ -160,7 +169,7 @@ class MembersController extends \BaseController {
 		else {
 			$member = Member::where('id', $id)->firstOrFail();
 			
-			$input = Input::only('first_name', 'middle_name', 'last_name', 'birthdate', 'gender', 'civil_status', 'country_id', 'street_address', 'location_id', 'email', 'mobile', 'telephone', 'fb');
+			$input = Input::only('first_name', 'middle_name', 'last_name', 'birthdate', 'gender', 'civil_status', 'country_id', 'street_address', 'location_id', 'other_location', 'email', 'mobile', 'telephone', 'fb');
 
 			extract($input);
 
@@ -172,7 +181,17 @@ class MembersController extends \BaseController {
 			$member->civil_status = $civil_status;
 			$member->country_id = $country_id;
 			$member->street_address = $street_address;
-			$member->location_id = $location_id;
+
+			/* Remove old entry and replace the right fields accordingly */
+			if($country_id > 1) {
+				$member->location_id = '';
+				$member->other_location = $other_location;
+			}
+			else {
+				$member->other_location = '';
+				$member->location_id = $location_id;
+			}
+
 			$member->email = $email;
 			$member->mobile = $mobile;
 			$member->telephone = $telephone;
@@ -209,6 +228,12 @@ class MembersController extends \BaseController {
 		return Redirect::route('members.index');
 	}
 
+	/**
+	 * Export to Excel sheet the list of members
+	 * EXPORT /members/export
+	 *
+	 * @return Excel
+	 */
 	public function export() {
 				
 		$members = Member::all();
@@ -222,7 +247,7 @@ class MembersController extends \BaseController {
 				'Middle Name' => $member->middle_name,
 				'Last Name' => $member->last_name,
 				'Birthdate' => $member->birthdate,
-				'Civil Status' => $member->civil_status,
+				'Civil Status' => $member->civil_status_title,
 				'Country' => $member->country_name,
 				'City/Province' => $member->location->city_province_address,
 				'Email' => $member->email,

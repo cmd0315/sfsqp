@@ -17,6 +17,11 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	protected $table = 'members';
 
+    /**
+    * Required for Excel exporting of data
+    *
+    * @var array
+    */
 	protected $csvArray = [];
 	
 	/**
@@ -26,6 +31,11 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
      */
 	protected $fillable = ['first_name', 'middle_name', 'last_name', 'birthdate', 'gender', 'civil_status', 'country_id', 'street_address', 'location_id', 'other_location', 'email', 'mobile', 'telephone', 'fb'];
 
+    /**
+    * Required for soft deletion
+    *
+    * @var array
+    */
     protected $dates = ['deleted_at'];
 
 
@@ -35,6 +45,13 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
     * @var array
     */
     protected $filter_fields = ['last_name', 'birthdate', 'gender', 'civil_status', 'country_id', 'street_address', 'city', 'email', 'created_at', 'updated_at'];
+
+    /**
+    * Many-to-one relationship between Country and Member
+    */
+    public function country(){
+        return $this->belongsTo('Country', 'country_id', 'id');
+    }
 
     /**
     * Many-to-one relationship between Location and Member
@@ -53,19 +70,10 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
     }
 
     /**
-    * Return the selected country where the member lives
+    * Return description of the given gender abbreviation
     *
     * @return String
     */
-    public function getCountryNameAttribute() {
-    	if($this->country_id === 0) {
-    		return 'Philippines';
-    	}
-    	else {
-    		return 'Others';
-    	}
-    }
-
     public function getGenderFormattedAttribute() {
         if($this->gender === 'M') {
             return 'Male';
@@ -74,9 +82,51 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
             return 'Female';
         }
     }
+
+    /**
+    * Return description of civil status symbol
+    *
+    * @return String
+    */
+    public function getCivilStatusTitleAttribute() {
+        if($this->civil_status > 0) {
+            return 'Married';
+        }
+        else {
+            return 'Single';
+        }
+    }
     
+    /**
+    * Return concatenated street and location address
+    *
+    * @return String
+    */
     public function getAddressAttribute() {
-        return ucfirst($this->street_address) . ', ' . ucfirst($this->location->city_province_address) . ', ' . ucfirst($this->country_name);
+        $address = ucfirst($this->street_address);
+
+        if($this->country_id > 1) {
+            $address .= ', ' . ucfirst($this->other_location);
+        }
+        else {
+            $address .= ', ' . ucfirst($this->location->city_province_address);
+        }
+
+        $address .= ', ' . ucfirst($this->country->country_name);
+        return $address;
+    }
+
+    public function getCityProvinceAddressAttribute() {
+        $address = '';
+
+        if($this->country_id > 1) {
+            $address = ucfirst($this->other_location);
+        }
+        else {
+            $address = ucfirst($this->location->city_province_address);
+        }
+
+        return $address;
     }
 
     /**
@@ -85,10 +135,12 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
     * @return String(html)
     */
     public function getFBAccountAttribute() {
-    	print '<a class="btn btn-xs btn-info" href="' . $this->fb . '"> FB Account </a>'; 
+    	print '<a href="' . $this->fb . '"> <i class="fa fa-facebook-square fa-lg"></i> </a>'; 
     }
 
     /**
+    * Return readable date for the date duration for ex. '5 minutes ago'
+    *
 	* @return Carbon
 	*/ 
 	public function getUpdatedAtReadableAttribute() {
@@ -118,7 +170,7 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
     * Sort datatable by the given database field and sort query direction
     *
     * @param array $params
-    * @return Client
+    * @return Member
     */
     public function scopeSort($query, array $params) {
         if($this->isSortable($params)) {
@@ -141,7 +193,7 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
     }
 
 
-     /**
+    /**
     * Return table rows containing search value
     *
     * @param $query
@@ -153,6 +205,14 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
             return $query->where(function($query) use ($search)
             {
                 $table_name = $this->table . '.*';
+
+                if(strcasecmp($search, 'Single') == 0) {
+                    $search = 0;
+                }
+                else if(strcasecmp($search, 'Married') == 0) {
+                    $search = 1;
+                }
+
                 $query->select($table_name)
                         ->where($this->table . '.first_name', 'LIKE', "%$search%")
                         ->orWhere($this->table . '.middle_name', 'LIKE', "%$search%")
@@ -171,9 +231,6 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
             return $query;
         }
     }
-
-
-
 }
 
 

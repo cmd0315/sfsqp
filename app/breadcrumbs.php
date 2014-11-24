@@ -24,3 +24,12 @@ Breadcrumbs::register('edit-member-profile', function($breadcrumbs, $id) {
     $breadcrumbs->parent('member-profile', $id);
     $breadcrumbs->push('Edit Member Profile', route('members.edit', $id));
 });
+
+Breadcrumbs::register('manage-countries', function($breadcrumbs) {
+    $breadcrumbs->push('List of Countries', route('countries.index'));
+});
+
+Breadcrumbs::register('country-profile', function($breadcrumbs, $id) {
+	$breadcrumbs->parent('manage-countries');
+    $breadcrumbs->push('Country Profile', route('countries.show', $id));
+});

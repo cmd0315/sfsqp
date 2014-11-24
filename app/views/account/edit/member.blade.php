@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="row">
-			<div class="col-lg-10 col-lg-offset-1">
+			<div class="col-lg-12">
 				{{ Form::open(['class' => 'form-horizontal', 'route' => ['members.update', e($member->id)], 'method' => 'PATCH']) }}
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -91,11 +91,11 @@
 										<label for="civil_status" class="col-sm-5 control-label">Civil Status</label>
 										<div class="col-sm-7">
 											<select class="form-control" name="civil_status" id="civil_status">
-												@foreach($civil_status_options as $civil_status_option)
-													@if($civil_status_option === e($member->civil_status))
-														<option value="{{$civil_status_option}}" selected>{{$civil_status_option}}</option>
+												@foreach($civil_status_options as $key => $civil_status_option)
+													@if($key == e($member->civil_status))
+														<option value="{{ $key }}" selected>{{$civil_status_option}}</option>
 													@else
-														<option value="{{$civil_status_option}}">{{$civil_status_option}}</option>
+														<option value="{{ $key }}">{{$civil_status_option}}</option>
 													@endif
 												@endforeach
 											</select>
@@ -112,11 +112,11 @@
 										<label for="country_id" class="col-sm-4 control-label">Country</label>
 										<div class="col-sm-8">
 											<select class="form-control" name="country_id" id="country_id">
-												@foreach($country_options as $key => $country_option)
+												@foreach($countries as $key => $country)
 													@if($key == e($member->country_id))
-														<option value="{{$key}}" selected>{{$country_option}}</option>
+														<option value="{{$key}}" selected>{{$country}}</option>
 													@else
-														<option value="{{$key}}">{{$country_option}}</option>
+														<option value="{{$key}}">{{$country}}</option>
 													@endif
 												@endforeach
 											</select>
@@ -141,18 +141,28 @@
 									<div class="form-group">
 										<label for="location_id" class="col-sm-4 control-label">City and Province</label>
 										<div class="col-sm-8">
-											<select class="form-control flexselect" name="location_id" id="location_id">
-												@foreach($locations as $location)
-													@if($location->id === e($member->location_id))
-														<option value="{{ e($location->id) }}" selected> {{ e($location->city_province_address) }}</option>
-													@else
-														<option value="{{ e($location->id) }}"> {{ e($location->city_province_address) }}</option>
-													@endif
-												@endforeach
-											</select>
-											@if($errors->has('location_id'))
-												<p class="bg-danger">{{ $errors->first('location_id') }}</p>
-											@endif
+											<div id="location1-div">
+												<select class="form-control flexselect" name="location_id" id="location_id">
+													@foreach($locations as $location)
+														@if( e($member->location_id) == 0 )
+															<option value=""></option>
+														@elseif($location->id == e($member->location_id))
+															<option value="{{ e($location->id) }}" selected> {{ e($location->city_province_address) }}</option>
+														@else
+															<option value="{{ e($location->id) }}"> {{ e($location->city_province_address) }}</option>
+														@endif
+													@endforeach
+												</select>
+												@if($errors->has('location_id'))
+													<p class="bg-danger">{{ $errors->first('location_id') }}</p>
+												@endif
+											</div><!-- #location-div -->
+											<div id="location2-div" style="display:none;">
+												<input type="text" class="form-control" id="other_location" name="other_location" value="{{ e($member->other_location) }}">
+												@if($errors->has('other_location'))
+													<p class="bg-danger">{{ $errors->first('other_location') }}</p>
+												@endif
+											</div><!-- #location2-div -->
 										</div>
 									</div><!-- .form-group -->
 								</div>

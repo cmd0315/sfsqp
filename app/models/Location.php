@@ -24,6 +24,11 @@ class Location extends Eloquent implements UserInterface, RemindableInterface {
      */
 	protected $fillable = ['city', 'area_name'];
 
+	/**
+	* Required for soft deletion
+	*
+	* @var array
+	*/
     protected $dates = ['deleted_at'];
 
  	/**
@@ -33,6 +38,11 @@ class Location extends Eloquent implements UserInterface, RemindableInterface {
     	return $this->hasMany('Member', 'id', 'location_id');
     }
 
+    /**
+    * Return concatenated city and provincial address
+    *
+    * @return String
+    */
     public function getCityProvinceAddressAttribute() {
     	return ucfirst($this->city) . ', ' . ucfirst($this->area_name); 
     }

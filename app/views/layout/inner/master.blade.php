@@ -24,7 +24,7 @@
 				                    </div>
 				                    <div class="panel-body">
 				                        <ul class="list-group">
-				                            <a href="{{ URL::route('accounts.edit', $currentUser->id) }}"><li class="list-group-item">Change Password</li></a>
+				                            <li class="list-group-item"><a href="{{ URL::route('accounts.edit', $currentUser->id) }}">Change Password</a></li>
 				                        </ul>
 				                    </div>
 				                </div> <!-- .panel -->
@@ -36,8 +36,8 @@
 				                    </div>
 				                    <div class="panel-body">
 				                        <ul class="list-group">
-				                            <a href="{{ URL::route('members.create') }}"><li class="list-group-item">Add Member</li></a>
-				                            <a href="{{ URL::route('members.index') }}"><li class="list-group-item">Manage Member List</li></a>
+				                            <li class="list-group-item"><a href="{{ URL::route('members.create') }}">Add Member</a></li>
+				                            <li class="list-group-item"> <a href="{{ URL::route('members.index') }}">Manage Member List</a></li>
 				                        </ul>
 				                    </div>
 				                </div> <!-- .panel -->
@@ -49,10 +49,8 @@
 				                    </div>
 				                    <div class="panel-body">
 				                        <ul class="list-group">
-				                            <li class="list-group-item">Add Country</li>
-				                            <li class="list-group-item">Manage Country List</li>
-				                            <li class="list-group-item">Add City/Province</li>
-				                            <li class="list-group-item">Manage City/Province List</li>
+				                            <li class="list-group-item"><a href="{{ URL::route('countries.index') }}">List of Countries</a></li>
+				                            <li class="list-group-item"><a href="{{ URL::route('locations.index') }}">List of Cities/Provinces</a></li>
 				                        </ul>
 				                    </div>
 				                </div> <!-- .panel -->

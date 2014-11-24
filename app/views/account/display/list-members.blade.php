@@ -8,13 +8,13 @@
 <div class="row">
 	<div class="col-lg-12">
 		<div class="row">
-			<div class="col-lg-10 col-lg-offset-1">
+			<div class="col-lg-12">
 				<div class="row table-toolbar">
 					<div class="col-lg-7">
 						<div class="btn-toolbar" role="toolbar">
 							<div class="btn-group btn-group-sm">
 								<a href="{{ URL::route('members.create') }}" class="btn btn-default">Add Member</a>
-								<a href="{{ URL::route('members.export') }}" class="btn btn-default">Export List</a>
+								<a href="{{ URL::route('members.export') }}" class="btn btn-default"><i class="fa fa-file-excel-o"></i> Export List</a>
 		  						<a class="btn btn-default" id="remove-btn" name="remove-btn">Remove Member</a>
 		  						<a class="btn btn-default cancel-btn" id="cancel-btn1" name="cancel-btn1">Cancel Remove</a>
 							</div><!-- .btn-group -->
@@ -25,7 +25,7 @@
 					      <div class="input-group input-group-sm">
 					         {{ Form::input('search', 'q', null, ['class' => 'form-control', 'placeholder' => 'Search']) }}
 					          <span class="input-group-btn">
-					            <button class="btn btn-default" type="submit">Search</button>
+					            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i> Search</button>
 					          </span>
 					      </div><!-- /input-group -->
 					    {{ Form::close() }}
@@ -37,7 +37,7 @@
 					</div>
 					<div class="col-lg-10">
 						@if(isset($search))
-							<h4>Search: <mark>{{ $search }}</mark></h4>
+							<h5>Search:  <mark>{{ $search }}</mark> <a href="{{ URL::route('members.index') }}"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></a></h5>
 						@endif
 					</div>
 				</div><!-- .row -->
@@ -73,10 +73,10 @@
 												<td><a href="{{ URL::route('members.show', e($member->id)) }}">{{ e($member->full_name) }}</a></td>
 												<td>{{ e($member->birthdate) }}</td>
 												<td>{{ e($member->gender) }}</td>
-												<td>{{ e($member->civil_status) }}</td>
-												<td>{{ e($member->country_name) }}</td>
+												<td>{{ e($member->civil_status_title) }}</td>
+												<td>{{ e($member->country->country_name) }}</td>
 												<td>{{ e($member->street_address) }}</td>
-												<td>{{ e($member->location->city_province_address) }}</td>
+												<td>{{ e($member->city_province_address) }}</td>
 												<td>{{ e($member->email) }}</td>
 												<td>{{ e($member->mobile) }}</td>
 												<td>{{ e($member->telephone) }}</td>

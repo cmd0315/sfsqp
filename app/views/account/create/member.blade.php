@@ -7,7 +7,7 @@
 @section('content')
 <div class="row">
 	<div class="col-lg-12">
-		{{ Form::open(array('class' => 'form-horizontal', 'route' => array('members.store'))) }}
+		{{ Form::open(['class' => 'form-horizontal', 'route' => ['members.store']]) }}
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4>Basic</h4>
@@ -93,7 +93,7 @@
 							<div class="form-group">
 								<label for="country_id" class="col-sm-4 control-label">Country</label>
 								<div class="col-sm-8">
-									{{ Form::select('country_id', $country_options, Input::old('country_id'), ['id' => 'country_id', 'class' => 'form-control']) }}
+									{{ Form::select('country_id', $countries, Input::old('country_id'), ['id' => 'country_id', 'class' => 'form-control']) }}
 									@if($errors->has('country_id'))
 										<p class="bg-danger">{{ $errors->first('country_id') }}</p>
 									@endif
@@ -120,26 +120,13 @@
 										@if($errors->has('location_id'))
 											<p class="bg-danger">{{ $errors->first('location_id') }}</p>
 										@endif
-									</div>
+									</div><!-- #location-div -->
 									<div id="location2-div" style="display:none;">
 										<input type="text" class="form-control" id="other_location" name="other_location"{{ (Input::old('other_location')) ? ' value ="' . Input::old('other_location') . '"' : '' }}>
 										@if($errors->has('other_location'))
 											<p class="bg-danger">{{ $errors->first('other_location') }}</p>
 										@endif
-									</div>
-								</div>
-							</div><!-- .form-group -->
-						</div>
-					</div><!-- .row -->
-					<div class="row" id="other-country-div">
-						<div class="col-lg-4">
-							<div class="form-group">
-								<label for="other_country" class="col-sm-4 control-label">Country Name</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" id="other_country" name="other_country"{{ (Input::old('other_country')) ? ' value ="' . Input::old('other_country') . '"' : '' }}>
-									@if($errors->has('other_country'))
-										<p class="bg-danger">{{ $errors->first('other_country') }}</p>
-									@endif
+									</div><!-- #location2-div -->
 								</div>
 							</div><!-- .form-group -->
 						</div>

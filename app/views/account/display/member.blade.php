@@ -83,7 +83,7 @@
 									<div class="form-group">
 										<label for="first_name" class="col-sm-4 control-label">Telephone:</label>
 										<div class="col-sm-8">
-											{{ date('M-d-Y', strtotime(e($member->telephone))) }}
+											{{ e($member->telephone) }}
 										</div>
 									</div><!-- .form-group -->
 								</div>

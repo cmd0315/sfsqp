@@ -3,7 +3,7 @@
 
  	$('#country_id').on('change', function(){
  		var country = $(this).val();
- 		if(country > 0) {
+ 		if(country > 1) {
  			$('#location1-div').hide();
  			$('#location2-div').show();
  		}
@@ -12,6 +12,17 @@
  			$('#location1-div').show();
  		}
  	});
+
+ 	countryID = $('#country_id').val();
+	if(countryID > 1) {
+		$('#location1-div').hide();
+		$('#location2-div').show();
+	}
+	else {
+		$('#location2-div').hide();
+		$('#location1-div').show();
+	}
+
 
  	/**
 	* For removing table items
@@ -37,4 +48,39 @@
 		$("#subject-name").html(member_name);
 		$('#myModal').modal('show');
 	});
+
+	/**
+	* For creating/editing the list of countries
+	*
+	*/
+	$('#add-country-div').hide();
+
+	$('#add-country-btn').on('click', function(){
+		$(this).hide();
+		$('#add-country-div').show();
+	});
+
+	$('#cancel-add-btn').on('click', function(){
+		$('#add-country-div').hide();
+		$('#add-country-btn').show();
+	});
+
+
+	/**
+	* For creating/editing the list of countries
+	*
+	*/
+	$('#edit-country-div').hide();
+
+	$('#edit-country-btn').on('click', function(){
+		$(this).hide();
+		$('#edit-country-div').show();
+	});
+
+	$('#cancel-edit-btn').on('click', function(){
+		$('#edit-country-div').hide();
+		$('#edit-country-btn').show();
+	});
+
+	
 });
