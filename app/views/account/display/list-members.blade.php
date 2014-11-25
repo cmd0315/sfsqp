@@ -33,9 +33,12 @@
 				</div><!-- .table-toolbar -->
 				<div class="row">
 					<div class="col-lg-2">
+						<h4>Active Members: <small>{{ $active_members }}</small></h4>
+					</div>
+					<div class="col-lg-2">
 						<h4>Total Members: <small>{{ $total_members }}</small></h4>
 					</div>
-					<div class="col-lg-10">
+					<div class="col-lg-8">
 						@if(isset($search))
 							<h5>Search:  <mark>{{ $search }}</mark> <a href="{{ URL::route('members.index') }}"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></a></h5>
 						@endif
@@ -44,7 +47,7 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="table-responsive">
-							<table class="table table-condensed table-hover table-big">
+							<table class="table table-condensed table-hover">
 								<thead>
 									<tr>
 										<th>#</th>
@@ -68,25 +71,29 @@
 									@if($members->count() > 0)
 										<?php $counter = 0; ?>
 										@foreach($members as $member)
-											<tr>
-												<td>{{ ++$counter }}</td>
-												<td><a href="{{ URL::route('members.show', e($member->id)) }}">{{ e($member->full_name) }}</a></td>
-												<td>{{ e($member->birthdate) }}</td>
-												<td>{{ e($member->gender) }}</td>
-												<td>{{ e($member->civil_status_title) }}</td>
-												<td>{{ e($member->country->country_name) }}</td>
-												<td>{{ e($member->street_address) }}</td>
-												<td>{{ e($member->city_province_address) }}</td>
-												<td>{{ e($member->email) }}</td>
-												<td>{{ e($member->mobile) }}</td>
-												<td>{{ e($member->telephone) }}</td>
-												<td>{{ e($member->fb_account) }}</td>
-												<td>{{ e($member->created_at) }}</td>
-												<td>{{ e($member->updated_at_readable) }}</td>
-												@if(e($member->deleted_at) == NULL)
-													<td><button class="btn btn-delete" id="{{ e($member->full_name) }}" value="{{ URL::route('members.destroy', e($member->id)) }}" style="display:none;">X</button></td>
-												@endif
-											</tr>
+											@if($member->isDeleted())
+												<tr class="danger">
+											@else
+												<tr>
+											@endif
+													<td>{{ ++$counter }}</td>
+													<td><a href="{{ URL::route('members.show', e($member->id)) }}">{{ e($member->full_name) }}</a></td>
+													<td>{{ e($member->birthdate) }}</td>
+													<td>{{ e($member->gender) }}</td>
+													<td>{{ e($member->civil_status_title) }}</td>
+													<td>{{ e($member->country->country_name) }}</td>
+													<td>{{ e($member->street_address) }}</td>
+													<td>{{ e($member->city_province_address) }}</td>
+													<td>{{ e($member->email) }}</td>
+													<td>{{ e($member->mobile) }}</td>
+													<td>{{ e($member->telephone) }}</td>
+													<td>{{ e($member->fb_account) }}</td>
+													<td>{{ e($member->created_at) }}</td>
+													<td>{{ e($member->updated_at_readable) }}</td>
+													@if( !($member->isDeleted()) )
+														<td><button class="btn btn-delete" id="{{ e($member->full_name) }}" value="{{ URL::route('members.destroy', e($member->id)) }}" style="display:none;">X</button></td>
+													@endif
+												</tr>
 										@endforeach
 									@endif
 								</tbody>

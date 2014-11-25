@@ -35,7 +35,7 @@ class Location extends Eloquent implements UserInterface, RemindableInterface {
     * Many-to-one relationship between Location and Member
     */
     public function members(){
-    	return $this->hasMany('Member', 'id', 'location_id');
+    	return $this->hasMany('Member', 'id', 'location_id')->withTrashed();
     }
 
     /**

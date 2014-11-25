@@ -9,7 +9,7 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-md-12">
-							<p class="text-center">Copyright © 2014 Worthy by <a target="_blank" href="http://htmlcoder.me">HtmlCoder</a>.</p>
+							<p class="text-center">St. Francis of Assisi and Sta. Quiteria Parish Copyright © 2014</p>
 						</div>
 					</div>
 				</div>

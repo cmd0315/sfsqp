@@ -26,10 +26,11 @@ class MembersController extends \BaseController {
 		$search = Request::get('q');
 		$sortBy = Request::get('sortBy');
 		$direction = Request::get('direction');
-		$members = Member::sort(compact('sortBy', 'direction'))->search($search)->paginate(3);
-		$total_members = Member::all()->count();
+		$members = Member::withTrashed()->sort(compact('sortBy', 'direction'))->search($search)->paginate(3);
+		$active_members = Member::all()->count();
+		$total_members = Member::withTrashed()->count();
 
-		return View::make('account.display.list-members', ['pageTitle' => 'List of Members'], compact('members', 'total_members', 'search'));
+		return View::make('account.display.list-members', ['pageTitle' => 'List of Members'], compact('members', 'active_members', 'total_members', 'search'));
 	}
 
 
@@ -89,6 +90,10 @@ class MembersController extends \BaseController {
 
 			extract($input);
 
+			if($fb) {
+				$fb = 'https://www.facebook.com/' . $fb;
+			}
+
 			//Add to members table
 			$member = Member::create(compact('first_name', 'middle_name', 'last_name', 'birthdate', 'gender', 'civil_status', 'country_id', 'street_address', 'location_id', 'other_location', 'email', 'mobile', 'telephone', 'fb'));
 
@@ -112,7 +117,7 @@ class MembersController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$member = Member::where('id', $id)->firstOrFail();
+		$member = Member::withTrashed()->where('id', $id)->firstOrFail();
 		return View::make('account.display.member', ['pageTitle' => 'Member Profile'], compact('member'));
 	}
 
@@ -236,27 +241,33 @@ class MembersController extends \BaseController {
 	 */
 	public function export() {
 				
-		$members = Member::all();
+		$members = Member::withTrashed()->get();
 		$csvArray = [];
 		$count = 0;
 
 		foreach($members as $member) {
-			array_push($csvArray, [
+			$memberArr = [
 				'#' => ++$count,
 				'First Name' => $member->first_name,
 				'Middle Name' => $member->middle_name,
 				'Last Name' => $member->last_name,
 				'Birthdate' => $member->birthdate,
 				'Civil Status' => $member->civil_status_title,
-				'Country' => $member->country_name,
-				'City/Province' => $member->location->city_province_address,
+				'Country' => $member->country->country_name,
+				'City/Province' => $member->city_province_address,
 				'Email' => $member->email,
 				'Mobile' => $member->mobile,
 				'Telephone' => $member->telephone,
 				'FB Account' => $member->fb,
 				'Created At' => $member['created_at']->toDateTimeString(),
 				'Updated At' => $member['updated_at']->toDateTimeString()
-			]);
+			];
+
+			if($member->isDeleted()) {
+				$memberArr["Deleted At"] = $member['deleted_at']->toDateTimeString();
+			}
+
+			array_push($csvArray, $memberArr);
 		}
 
 		Excel::create('List of Church Members', function($excel) use($csvArray) {
@@ -284,4 +295,25 @@ class MembersController extends \BaseController {
 		})->export('xls');
 
 	}
+
+	/**
+	 * Restore soft deleted item
+	 * RESTORE /members/restore
+	 *
+	 * @param int $id
+	 * @return Redirect
+	 */
+	public function restore($id) {
+		$member = Member::withTrashed()->where('id', $id)->firstOrFail();
+
+		if($member->restore()) {
+			Flash::success('You have sucessfully restored ' . $member->full_name . ' in the list of members!');
+		}
+		else {
+			Flash::error('Error restoring ' . $member->full_name . ' in the list of members.');
+		}
+
+		return Redirect::route('members.show', $id);
+	}
+
 }

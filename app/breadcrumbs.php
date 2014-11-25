@@ -33,3 +33,7 @@ Breadcrumbs::register('country-profile', function($breadcrumbs, $id) {
 	$breadcrumbs->parent('manage-countries');
     $breadcrumbs->push('Country Profile', route('countries.show', $id));
 });
+
+Breadcrumbs::register('manage-locations', function($breadcrumbs) {
+    $breadcrumbs->push('List of Cities/Provinces in the Philippines', route('locations.index'));
+});

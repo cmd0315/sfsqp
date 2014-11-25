@@ -43,9 +43,13 @@
 
 	$('.btn-delete').on('click', function(){
 		var value = $(this).val();
-		var member_name = $(this).attr('id');
+
+		if(value == null || value == '') {
+			value = $(this).attr('name');
+		}
+		var name = $(this).attr('id');
 		$("#modal-form").attr("action", value);
-		$("#subject-name").html(member_name);
+		$("#subject-name").html(name);
 		$('#myModal').modal('show');
 	});
 

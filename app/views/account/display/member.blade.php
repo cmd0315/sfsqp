@@ -18,7 +18,7 @@
 							<div class="col-lg-8">
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-3 control-label">Name:</label>
+										<label class="col-sm-3 control-label">Name:</label>
 										<div class="col-sm-9">
 											{{ e($member->full_name) }}
 										</div>
@@ -26,9 +26,17 @@
 								</div>
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-3 control-label">Address:</label>
+										<label class="col-sm-3 control-label">Address:</label>
 										<div class="col-sm-9">
 											{{ e($member->address) }}
+										</div>
+									</div><!-- .form-group -->
+								</div>
+								<div class="row">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">Birthdate:</label>
+										<div class="col-sm-9">
+											{{ date('M-d-Y', strtotime(e($member->birthdate))) }}
 										</div>
 									</div><!-- .form-group -->
 								</div>
@@ -36,15 +44,15 @@
 							<div class="col-lg-4">
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-4 control-label">Birthdate:</label>
+										<label class="col-sm-4 control-label">Status:</label>
 										<div class="col-sm-8">
-											{{ date('M-d-Y', strtotime(e($member->birthdate))) }}
+											{{ e($member->status) }}
 										</div>
 									</div><!-- .form-group -->
 								</div>
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-4 control-label">Gender:</label>
+										<label class="col-sm-4 control-label">Gender:</label>
 										<div class="col-sm-8">
 											{{ e($member->gender_formatted) }}
 										</div>
@@ -63,7 +71,7 @@
 							<div class="col-lg-6">
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-4 control-label">Email:</label>
+										<label class="col-sm-4 control-label">Email:</label>
 										<div class="col-sm-8">
 											{{ e($member->email) }}
 										</div>
@@ -71,7 +79,7 @@
 								</div>
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-4 control-label">Mobile:</label>
+										<label class="col-sm-4 control-label">Mobile:</label>
 										<div class="col-sm-8">
 											{{ e($member->mobile) }}
 										</div>
@@ -81,7 +89,7 @@
 							<div class="col-lg-6">
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-4 control-label">Telephone:</label>
+										<label class="col-sm-4 control-label">Telephone:</label>
 										<div class="col-sm-8">
 											{{ e($member->telephone) }}
 										</div>
@@ -89,7 +97,7 @@
 								</div>
 								<div class="row">
 									<div class="form-group">
-										<label for="first_name" class="col-sm-4 control-label">Facebook Account:</label>
+										<label class="col-sm-4 control-label">Facebook Account:</label>
 										<div class="col-sm-8">
 											<a href="{{ e($member->fb) }}">{{ e($member->fb) }}</a>
 										</div>
@@ -104,11 +112,36 @@
 		<div class="row">
 			<div class="col-lg-10 col-lg-offset-1">
 				<div class="pull-right">
-					<a href="{{ URL::route('members.index') }}" class="btn btn-lg btn-default">View List</a>
+					@if($member->isDeleted())
+						<a href="{{ URL::route('members.restore', e($member->id)) }}" class="btn btn-default">
+							<i class="fa fa-archive"></i> Restore
+						</a>
+					@else		
+						<button type="button" class="btn btn-default btn-delete" id="{{ e($member->full_name) }}" value="{{ URL::route('members.destroy', e($member->id)) }}">
+							<i class="fa fa-trash"></i> Remove
+						</button>
+					@endif
 					<a href="{{ URL::route('members.edit', e($member->id)) }}" class="btn btn-lg btn-primary">Edit</a>
 				</div>
 			</div>
 		</div>
 	</div>
 </div><!-- .row -->
+@stop
+
+@section('modal-content')
+<div class="modal-content">
+	{{ Form::open(['id' => 'modal-form', 'route' => ['members.destroy'], 'method' => 'DELETE']) }}
+		<div class="modal-header">
+			<h4 class="modal-title" id="myModalLabel">Remove Member</h4>
+		</div>
+		<div class="modal-body">
+			Are you sure you want to remove <span id="subject-name"></span> to the list of countries?
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			{{ Form::submit('OK', array('class' => 'btn btn-primary')) }}
+		</div>
+	{{ Form::close() }}
+</div><!-- .modal-content -->
 @stop

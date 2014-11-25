@@ -39,13 +39,23 @@
 		</div><!-- .row -->
 	</div>
 	<div class="col-lg-4">
-		<button type="button" class="btn btn-default pull-right btn-delete" id="{{ e($country->country_name) }}" value="{{ URL::route('countries.destroy', e($country->id)) }}"><i class="fa fa-trash"></i> Remove</button>
+		@if($country->isDeleted())
+			<a href="{{ URL::route('countries.restore', e($country->id)) }}" class="btn btn-default pull-right">
+				<i class="fa fa-archive"></i> Restore
+			</a>
+		@else
+			<button type="button" class="btn btn-default pull-right btn-delete" id="{{ e($country->country_name) }}" value="{{ URL::route('countries.destroy', e($country->id)) }}">
+				<i class="fa fa-trash"></i> Remove
+			</button>
+		@endif
 	</div>
 </div><!-- .row -->
 <hr>
 <div class="row">
 	<div class="col-lg-12">
-		<button class="btn btn-default btn-xs" href="#" id="edit-country-btn"><i class="fa fa-edit"></i> Edit Country</button>
+		@if( !($country->isDeleted()) )
+			<button class="btn btn-default btn-xs" href="#" id="edit-country-btn"><i class="fa fa-edit"></i> Edit Country</button>
+		@endif
 	</div>
 </div><!-- .row -->
 <br>

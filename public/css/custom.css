@@ -58,6 +58,7 @@ li.message-preview {
     background-color: transparent;
     color: red;
     font-weight: bold;
+    min-width: 25px;
 }
 
 /* BANNER */

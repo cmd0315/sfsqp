@@ -50,14 +50,14 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
     * Many-to-one relationship between Country and Member
     */
     public function country(){
-        return $this->belongsTo('Country', 'country_id', 'id');
+        return $this->belongsTo('Country', 'country_id', 'id')->withTrashed();
     }
 
     /**
     * Many-to-one relationship between Location and Member
     */
     public function location(){
-    	return $this->belongsTo('Location', 'location_id', 'id');
+    	return $this->belongsTo('Location', 'location_id', 'id')->withTrashed();
     }
 
     /**
@@ -230,6 +230,36 @@ class Member extends Eloquent implements UserInterface, RemindableInterface {
         else {
             return $query;
         }
+    }
+
+    /**
+    * Check if the entry has already been softdeleted
+    *
+    * @return boolean
+    */
+    public function isDeleted() {
+        if($this->deleted_at !== NULL) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+    * Return status of member based on the soft deletion filter
+    *
+    * @return String
+    */
+    public function getStatusAttribute() {
+        if($this->isDeleted()) {
+            print '<span class="text-danger">Inactive</span>';
+        }
+        else {
+            print 'Active';
+
+        }
+
     }
 }
 

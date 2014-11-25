@@ -2,6 +2,14 @@
 
 class LocationsController extends \BaseController {
 
+   /**
+	* Constructor
+	*/
+	function __construct() {
+		$this->beforeFilter('auth');
+	}
+
+
 	/**
 	 * Display a listing of the resource.
 	 * GET /locations
@@ -10,7 +18,7 @@ class LocationsController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		return View::make('account.display.list-locations', ['pageTitle' => 'List of City/Provinces in the Philippines']);
 	}
 
 	/**

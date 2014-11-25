@@ -49,7 +49,17 @@
 			<div class="col-lg-12">
 				<ul>
 					@foreach($countries as $country)
-						<li><a href="{{ URL::route('countries.show', e($country->id)) }}">{{ e($country->country_name) }}</a> <a href="{{ URL::route('countries.destroy', e($country->id)) }}" class="pull-right"><i class="fa fa-close"></i></a></li>
+						@if($country->isDeleted())
+							<li class="list-group-item-danger">
+								<a href="{{ URL::route('countries.show', e($country->id)) }}">{{ e($country->country_name) }}</a>
+						@else
+							<li>
+								<a href="{{ URL::route('countries.show', e($country->id)) }}">{{ e($country->country_name) }}</a> 
+								<a href="#" class="pull-right btn-delete" id="{{ e($country->country_name) }}" name="{{ URL::route('countries.destroy', e($country->id)) }}">
+									<i class="fa fa-close"></i>
+								</a>
+						@endif
+							</li>
 					@endforeach
 				</ul>
 				{{ $countries->appends(Request::except('page'))->links(); }}
@@ -109,4 +119,21 @@
 	    {{ Form::close() }}
 	</div>
 </div><!-- .row -->
+@stop
+
+@section('modal-content')
+<div class="modal-content">
+	{{ Form::open(['id' => 'modal-form', 'route' => ['countries.destroy'], 'method' => 'DELETE']) }}
+		<div class="modal-header">
+			<h4 class="modal-title" id="myModalLabel">Remove Country</h4>
+		</div>
+		<div class="modal-body">
+			Are you sure you want to remove <span id="subject-name"></span> to the list of countries?
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			{{ Form::submit('OK', array('class' => 'btn btn-primary')) }}
+		</div>
+	{{ Form::close() }}
+</div><!-- .modal-content -->
 @stop

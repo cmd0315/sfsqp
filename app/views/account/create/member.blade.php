@@ -177,8 +177,10 @@
 						<div class="col-lg-6">
 							<div class="form-group">
 								<label for="fb" class="col-sm-4 control-label">Facebook Account</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" id="fb" name="fb"{{ (Input::old('fb')) ? ' value ="' . Input::old('fb') . '"' : '' }}>
+									<div class="input-group">
+	  									<span class="input-group-addon">https://www.facebook.com/</span>
+										<input type="text" class="form-control" id="fb" name="fb"{{ (Input::old('fb')) ? ' value ="' . Input::old('fb') . '"' : '' }}>
+									</div><!-- .input-group -->
 									@if($errors->has('fb'))
 										<p class="bg-danger">{{ $errors->first('fb') }}</p>
 									@endif
@@ -188,12 +190,12 @@
 						</div>
 					</div><!-- .row -->
 				</div><!-- .panel-body -->
+				<div class="row">
+					<div class="col-lg-12">
+						<button type="submit" class="btn btn-lg btn-primary  pull-right" id="submit_form" name="submit_form">Submit</button>
+					</div>
+				</div><!-- .row -->
 			</div><!-- .panel -->
-			<div class="row pull-right">
-				<div class="col-lg-12">
-					<button type="submit" class="btn btn-lg btn-primary" id="submit_form" name="submit_form">Submit</button>
-				</div>
-			</div><!-- .row -->
 	    {{ Form::close() }}
 	</div>
 </div><!-- .row -->

@@ -43,7 +43,7 @@ class Country extends Eloquent implements UserInterface, RemindableInterface {
     * Many-to-one relationship between Country and Member
     */
     public function members(){
-        return $this->hasMany('Member', 'id', 'country_id');
+        return $this->hasMany('Member', 'id', 'country_id')->withTrashed();
     }
 
     /**
@@ -112,6 +112,20 @@ class Country extends Eloquent implements UserInterface, RemindableInterface {
         }
         else {
             return $query;
+        }
+    }
+
+    /**
+    * Check if the entry has already been softdeleted
+    *
+    * @return boolean
+    */
+    public function isDeleted() {
+        if($this->deleted_at !== NULL) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 }

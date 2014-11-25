@@ -21,7 +21,7 @@ class CountriesController extends \BaseController {
 		$sortBy = Request::get('sortBy');
 		$direction = Request::get('direction');
 
-		$countries = Country::sort(compact('sortBy', 'direction'))->search($search)->paginate(5);
+		$countries = Country::withTrashed()->sort(compact('sortBy', 'direction'))->search($search)->paginate(5);
 		$total_countries = Country::all()->count();
 
 		return View::make('account.create.country', ['pageTitle' => 'List of Countries'], compact('countries', 'total_countries', 'search'));
@@ -75,7 +75,7 @@ class CountriesController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$country = Country::where('id', $id)->firstOrFail();
+		$country = Country::withTrashed()->where('id', $id)->firstOrFail();
 		$country_name = 'Country <small>' . $country->country_name . '</small>';
 		return View::make('account.edit.country', ['pageTitle' => $country_name], compact('country'));
 	}
@@ -148,17 +148,23 @@ class CountriesController extends \BaseController {
 	 */
 	public function export()
 	{
-		$countries = Country::all();
+		$countries = Country::withTrashed()->get();
 		$csvArray = [];
 		$count = 0;
 
 		foreach($countries as $country) {
-			array_push($csvArray, [
+			$countryArray = [
 				'#' => ++$count,
 				'Country Name' => $country->country_name,
 				'Created At' => $country['created_at']->toDateTimeString(),
 				'Updated At' => $country['updated_at']->toDateTimeString()
-			]);
+			];
+
+			if($country->isDeleted()) {
+				$countryArray['Deleted At'] = $country['deleted_at']->toDateTimeString();
+			}
+
+			array_push($csvArray, $countryArray);
 		}
 
 		Excel::create('List of Church associated countries', function($excel) use($csvArray) {
@@ -184,6 +190,26 @@ class CountriesController extends \BaseController {
 
 			});
 		})->export('xls');
+	}
+
+	/**
+	 * Restore soft deleted item
+	 * RESTORE /countries/restore
+	 *
+	 * @param int $id
+	 * @return Redirect
+	 */
+	public function restore($id) {
+		$country = Country::withTrashed()->where('id', $id)->firstOrFail();
+
+		if($country->restore()) {
+			Flash::success('You have sucessfully restored ' . $country->country_name . ' in the list of countries!');
+		}
+		else {
+			Flash::error('Error restoring ' . $country->country_name . ' in the list of countries.');
+		}
+
+		return Redirect::route('countries.show', $id);
 	}
 
 }
